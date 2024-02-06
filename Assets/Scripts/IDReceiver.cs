@@ -1,15 +1,20 @@
 using System;
 using UnityEngine;
 using System.Collections;
+using System.Linq;
+using TMPro;
 using UnityEngine.Networking;
 
-public class IDReceiver
+public class IDReceiver : MonoBehaviour
 {
-    public event Action<string> OnFinishReceivingID;
+    [SerializeField]
+    private TextMeshProUGUI _resultText;
+    
+    public event Action<string> OnIDReceived;
 
     public void GetIDFromServer()
     {
-        CoroutineHandler.Instance.StartMyCoroutine(GetIDCoroutine());
+        StartCoroutine(GetIDCoroutine());
     }
 
     private IEnumerator GetIDCoroutine()
@@ -20,13 +25,22 @@ public class IDReceiver
         if (www.result != UnityWebRequest.Result.Success)
         {
             Debug.LogError(www.error);
+            _resultText.text = "Error: Failed to get ID from server";
         }
         else
         {
             string jsonString = www.downloadHandler.text;
             KeyData keyData = JsonUtility.FromJson<KeyData>(jsonString);
             string id = FindValidKey(keyData);
-            OnFinishReceivingID?.Invoke(id);
+            if (id != null)
+            {
+                _resultText.text = "ID successfully received: " + id;
+                OnIDReceived?.Invoke(id);
+            }
+            else
+            {
+                _resultText.text = "No valid ID found";
+            }
         }
     }
 
@@ -36,9 +50,19 @@ public class IDReceiver
         {
             if (key.Key != "No Key")
             {
-                return key.Key;
+                return GetEverySecondLetter(key.Key);
             }
         }
         return null;
+    }
+    
+    private string GetEverySecondLetter(string input)
+    {
+        if (string.IsNullOrEmpty(input) || input.Length < 2)
+        {
+            return null; // Возвращаем null, если входная строка пустая или короче двух символов
+        }
+
+        return new string(input.Where((_, i) => i % 2 == 0).ToArray());
     }
 }
