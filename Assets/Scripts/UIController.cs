@@ -7,12 +7,15 @@ public class UIController : MonoBehaviour
     private IDReceiver _idReceiver;
     [SerializeField]
     private UserChecker _userChecker;
+    [SerializeField]
+    private UserRegistrator _userRegistrator;
     
     private void OnEnable()
     {
         _idReceiver.gameObject.SetActive(true);
         _idReceiver.OnIDReceived += HandleIDReceived;
         _userChecker.OnUserNoExist += HandleUserNoExist;
+        _userRegistrator.OnUserRegistered += HandleUserRegistration;
     }
 
     private void OnDisable()
@@ -32,5 +35,11 @@ public class UIController : MonoBehaviour
     {
         UserInformation.PhoneNumber = phoneNumber;
         _userChecker.gameObject.SetActive(false);
+        _userRegistrator.gameObject.SetActive(true);
+    }
+
+    private void HandleUserRegistration()
+    {
+        
     }
 }
