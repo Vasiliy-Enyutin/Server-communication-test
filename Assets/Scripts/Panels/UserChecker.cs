@@ -7,15 +7,15 @@ using UnityEngine.Networking;
 
 namespace Panels
 {
-    public class UserChecker : MonoBehaviour
+    public class UserChecker : MonoBehaviour, IPhasePanel
     {
         [SerializeField]
         private TMP_InputField phoneNumberInputField;
         [SerializeField]
         private TextMeshProUGUI _resultText;
 
-        public event Action<string> OnUserNoExist;
-
+        public event Action OnSuccess;
+        
         private string _id;
         private string _phoneNumber;
 
@@ -59,7 +59,8 @@ namespace Panels
                 else if (response.Equals("NoExist"))
                 {
                     _resultText.text = "User does not exist";
-                    OnUserNoExist?.Invoke(_phoneNumber);
+                    UserInformation.PhoneNumber = _phoneNumber;
+                    OnSuccess?.Invoke();
                 }
                 else
                 {

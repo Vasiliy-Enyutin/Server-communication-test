@@ -7,12 +7,12 @@ using UnityEngine.Networking;
 
 namespace Panels
 {
-    public class UserRegistrator : MonoBehaviour
+    public class UserRegistrator : MonoBehaviour, IPhasePanel
     {
         [SerializeField]
         private TextMeshProUGUI _resultText;
 
-        public event Action OnUserRegistered;
+        public event Action OnSuccess;
 
         private string _id;
         private string _phoneNumber;
@@ -50,7 +50,7 @@ namespace Panels
                 if (response.Equals("RegOK"))
                 {
                     _resultText.text = "User successfully registered";
-                    OnUserRegistered?.Invoke();
+                    OnSuccess?.Invoke();
                 }
                 else
                 {

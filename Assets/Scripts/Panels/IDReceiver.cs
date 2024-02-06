@@ -7,12 +7,12 @@ using UnityEngine.Networking;
 
 namespace Panels
 {
-    public class IDReceiver : MonoBehaviour
+    public class IDReceiver : MonoBehaviour, IPhasePanel
     {
         [SerializeField]
         private TextMeshProUGUI _resultText;
     
-        public event Action<string> OnIDReceived;
+        public event Action OnSuccess;
 
         public void GetIDFromServer()
         {
@@ -37,7 +37,8 @@ namespace Panels
                 if (id != null)
                 {
                     _resultText.text = "ID successfully received: " + id;
-                    OnIDReceived?.Invoke(id);
+                    UserInformation.ID = id;
+                    OnSuccess?.Invoke();
                 }
                 else
                 {
