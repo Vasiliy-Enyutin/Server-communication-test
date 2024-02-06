@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Panels;
+using UnityEngine;
 
 public class UIController : MonoBehaviour
 {
@@ -25,12 +26,11 @@ public class UIController : MonoBehaviour
         UserInformation.ID = id;
         _idReceiver.gameObject.SetActive(false);
         _userChecker.gameObject.SetActive(true);
-        Debug.Log(id);
     }
 
     private void HandleUserNoExist(string phoneNumber)
     {
         UserInformation.PhoneNumber = phoneNumber;
-        Debug.Log(phoneNumber);
+        _userChecker.gameObject.SetActive(false);
     }
 }
