@@ -14,6 +14,8 @@ namespace Panels
     
         public event Action OnSuccess;
 
+        private const string GET_KEY_URI = "http://45.86.183.61/Test/GetKey.php";
+
         public void GetIDFromServer()
         {
             StartCoroutine(GetIDCoroutine());
@@ -21,42 +23,38 @@ namespace Panels
 
         private IEnumerator GetIDCoroutine()
         {
-            UnityWebRequest www = UnityWebRequest.Get("http://45.86.183.61/Test/GetKey.php");
+            UnityWebRequest www = UnityWebRequest.Get(GET_KEY_URI);
             yield return www.SendWebRequest();
 
             if (www.result != UnityWebRequest.Result.Success)
             {
                 Debug.LogError(www.error);
                 _resultText.text = "Error: Failed to get ID from server";
+                yield break;
+            }
+  
+            string jsonString = www.downloadHandler.text;
+            KeyData keyData = JsonUtility.FromJson<KeyData>(jsonString);
+            string id = FindValidKey(keyData);
+            if (id != null)
+            {
+                _resultText.text = "ID successfully received: " + id;
+                UserInformation.ID = id;
+                OnSuccess?.Invoke();
             }
             else
             {
-                string jsonString = www.downloadHandler.text;
-                KeyData keyData = JsonUtility.FromJson<KeyData>(jsonString);
-                string id = FindValidKey(keyData);
-                if (id != null)
-                {
-                    _resultText.text = "ID successfully received: " + id;
-                    UserInformation.ID = id;
-                    OnSuccess?.Invoke();
-                }
-                else
-                {
-                    _resultText.text = "No valid ID found";
-                }
+                _resultText.text = "No valid ID found";
             }
+            
         }
 
         private string FindValidKey(KeyData keyData)
         {
-            foreach (KeyValue key in keyData.Keys)
-            {
-                if (key.Key != "No Key")
-                {
-                    return GetEverySecondLetter(key.Key);
-                }
-            }
-            return null;
+            return keyData.Keys
+                .Where(key => key.Key != "No Key")
+                .Select(key => GetEverySecondLetter(key.Key))
+                .FirstOrDefault();
         }
     
         private string GetEverySecondLetter(string input)

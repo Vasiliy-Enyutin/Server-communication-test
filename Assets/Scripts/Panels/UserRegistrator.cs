@@ -13,6 +13,8 @@ namespace Panels
         private TextMeshProUGUI _resultText;
 
         public event Action OnSuccess;
+        
+        private const string REG_USERS_URI = "http://45.86.183.61/Test/RegUsers.php";
 
         private string _id;
         private string _phoneNumber;
@@ -34,9 +36,8 @@ namespace Panels
             form.AddField("Country", phoneParts[0]);
             form.AddField("Operator", phoneParts[1]);
             form.AddField("Number", phoneParts[2]);
-
-            string url = "http://45.86.183.61/Test/RegUsers.php";
-            UnityWebRequest www = UnityWebRequest.Post(url, form);
+            
+            UnityWebRequest www = UnityWebRequest.Post(REG_USERS_URI, form);
             yield return www.SendWebRequest();
 
             if (www.result != UnityWebRequest.Result.Success)

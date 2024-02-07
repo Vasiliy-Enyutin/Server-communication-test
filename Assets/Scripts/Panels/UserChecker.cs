@@ -15,7 +15,9 @@ namespace Panels
         private TextMeshProUGUI _resultText;
 
         public event Action OnSuccess;
-        
+
+        private const string CHECK_USER_URI = "http://45.86.183.61/Test/CheckUser.php";
+
         private string _id;
         private string _phoneNumber;
 
@@ -40,8 +42,7 @@ namespace Panels
             form.AddField("ID", _id );
             form.AddField("Phone", _phoneNumber);
         
-            string url = "http://45.86.183.61/Test/CheckUser.php";
-            UnityWebRequest www = UnityWebRequest.Post(url, form);
+            UnityWebRequest www = UnityWebRequest.Post(CHECK_USER_URI, form);
             yield return www.SendWebRequest();
 
             if (www.result != UnityWebRequest.Result.Success)
