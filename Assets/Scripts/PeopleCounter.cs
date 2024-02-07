@@ -14,7 +14,7 @@ public class PeopleCounter : MonoBehaviour
     private Queue<CountBox> _countBoxQueue;
     private float getPeopleCountTimeout = 5;
     
-    private const string URI = "http://45.86.183.61/Test/HowMany.php";
+    private const string HOW_MANY_URI = "http://45.86.183.61/Test/HowMany.php";
 
     private void Awake()
     {
@@ -37,7 +37,7 @@ public class PeopleCounter : MonoBehaviour
 
     private IEnumerator GetPeopleCountCoroutine()
     {
-        UnityWebRequest www = UnityWebRequest.Get(URI);
+        UnityWebRequest www = UnityWebRequest.Get(HOW_MANY_URI);
         yield return www.SendWebRequest();
 
         if (www.result != UnityWebRequest.Result.Success)
